@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>Observable Form Demo</title>
+  <style>
+    body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f5f7fa;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont;
+    }
+
+    .card {
+    background: #fff;
+    padding: 32px;
+    width: 340px;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+    margin: 0 0 20px;
+    text-align: center;
+    }
+
+    .field {
+    margin-bottom: 16px;
+    }
+
+    input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    }
+
+    button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #667eea;
+    color: #fff;
+    cursor: pointer;
+    }
+
+    .status {
+    margin-top: 16px;
+    font-size: 13px;
+    text-align: center;
+    }
+
+    .status[data-state="idle"] { color: #888; }
+    .status[data-state="error"] { color: #e53e3e; }
+    .status[data-state="success"] { color: #38a169; }
+  </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>訂閱電子報</h2>
+
+        <form id="myForm" data-form-state="idle">
+            <div class="field">
+                <input id="email" placeholder="example@mail.com" />
+            </div>
+            <button type="submit">送出</button>
+        </form>
+
+        <div id="status" class="status" data-state="idle">
+            尚未送出
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("myForm");
+        const emailInput = document.getElementById("email");
+        const status = document.getElementById("status");
+
+        form.addEventListener("submit", (e) => {
+            
+            e.preventDefault();
+
+            const email = emailInput.value;
+
+            console.group("Form Submit");
+            console.log("Input email:", email);
+            console.log("Length:", email.length);
+            console.log("Contains @:", email.includes("@"));
+
+            form.dataset.formState = "validating";
+            status.dataset.state = "idle";
+            status.innerText = "驗證中...";
+
+            // 故意設計的錯誤流程
+            if (!email.includes("@")) {
+                form.dataset.formState = "error";
+                status.dataset.state = "error";
+                status.innerText = "Email 格式錯誤";
+
+                console.warn("Validation failed: invalid email format");
+
+                // 故意留下錯誤給 Gemini CLI 分析
+                console.log(errorMessage); // ReferenceError
+                return;
+            }
+
+            form.dataset.formState = "success";
+            status.dataset.state = "success";
+            status.innerText = "送出成功";
+
+            console.log("Form submit success");
+            console.groupEnd();
+        });
+    </script>
+</body>
+</html>

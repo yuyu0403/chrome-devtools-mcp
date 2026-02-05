@@ -25,6 +25,12 @@
       border-radius: 16px; 
       box-shadow: 0 12px 36px rgba(0,0,0,.25); 
       text-align: center;
+      cursor: grab;
+      position: absolute; 
+    }
+
+    .login-card:active {
+      cursor: grabbing;
     }
 
     .login-card h2 {
@@ -120,6 +126,29 @@
             passwordInput.value = ''; 
           });
         }
+        const card = document.querySelector('.login-card');
+
+        let isDragging = false;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        card.addEventListener('mousedown', (e) => {
+          isDragging = true;
+
+          offsetX = e.clientX - card.offsetLeft;
+          offsetY = e.clientY - card.offsetTop;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+          if (!isDragging) return;
+
+          card.style.left = `${e.clientX - offsetX}px`;
+          card.style.top = `${e.clientY - offsetY}px`;
+        });
+
+        document.addEventListener('mouseup', () => {
+          isDragging = false;
+        });
       </script>
     </body>
     </html>
